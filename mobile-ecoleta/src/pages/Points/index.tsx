@@ -1,9 +1,108 @@
 import React from 'react';
-import { View ,Image, StyleSheet, Text, ImageBackground } from 'react-native';
+import { View ,Image, StyleSheet, Text, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
+import Constants from 'expo-constants';
+import { Feather as Icon } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import MapView , { Marker } from 'react-native-maps'
+import {SvgUri} from 'react-native-svg';
 
 const Points = () => {
-  return <View />
 
+  const navigation = useNavigation();
+
+  function handleNavigateBack(){
+    navigation.goBack();
+  }
+
+  function handleNavigateDetail(){
+    navigation.navigate("Detail")
+  }
+
+  return (
+    <>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={handleNavigateBack}>
+        <Icon name="arrow-left" size={22} color="#34cd79" />
+      </TouchableOpacity>
+
+      <Text style={styles.title}> Bem Vindo</Text>
+      <Text style={styles.description}> Encontre no mapa um ponto de coleta.</Text>
+      <View style={styles.mapContainer}>
+        <MapView style={styles.map}
+          initialRegion={{
+            latitude: -23.6869165,
+            longitude: -46.6310283,
+            latitudeDelta: 0.014,
+            longitudeDelta: 0.014
+          }}
+        >
+        <Marker coordinate={{
+          latitude: -23.6869165,
+          longitude: -46.6310283}}
+          onPress={handleNavigateDetail}
+        >
+          <View style={styles.mapMarkerContainer}>
+          <Image 
+            style={styles.mapMarkerImage}
+            source={{ uri:"https://images.unsplash.com/photo-1552825896-8059df63a1fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }}/>
+            <Text style={styles.mapMarkerTitle}> Mercado</Text>
+          </View>
+          
+        </Marker>
+
+        </MapView>
+      </View>
+    </View>
+
+    <View style={styles.itemsContainer}>
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 32 }}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigateBack}>        
+          <SvgUri width={42} 
+              height={42} 
+              uri="http://192.168.0.210:3000/uploads/lampadas.svg" 
+              color="#34cd79"/>
+          <Text style={styles.itemTitle}> Lâmpadas</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.item} onPress={handleNavigateBack}>        
+          <SvgUri width={42} 
+              height={42} 
+              uri="http://192.168.0.210:3000/uploads/baterias.svg" 
+              color="#34cd79"/>
+          <Text style={styles.itemTitle}> Baterias</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.item} onPress={handleNavigateBack}>        
+          <SvgUri width={42} 
+              height={42} 
+              uri="http://192.168.0.210:3000/uploads/papeis-papelao.svg" 
+              color="#34cd79"/>
+          <Text style={styles.itemTitle}> Pepelão</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.item} onPress={handleNavigateBack}>        
+          <SvgUri width={42} 
+              height={42} 
+              uri="http://192.168.0.210:3000/uploads/organicos.svg" 
+              color="#34cd79"/>
+          <Text style={styles.itemTitle}> Orgânicos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.item} onPress={handleNavigateBack}>        
+          <SvgUri width={42} 
+              height={42} 
+              uri="http://192.168.0.210:3000/uploads/oleo.svg" 
+              color="#34cd79"/>
+          <Text style={styles.itemTitle}> Oleo</Text>
+        </TouchableOpacity>
+
+      </ScrollView>
+    </View>
+    </>
+  );
 }
 
 
@@ -11,7 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 32,
-    paddingTop: 20 + 400 //Constants.statusBarHeight,
+    paddingTop: 20 + Constants.statusBarHeight,
   },
 
   title: {
@@ -73,6 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 16,
     marginBottom: 32,
+    paddingHorizontal: 10
   },
 
   item: {

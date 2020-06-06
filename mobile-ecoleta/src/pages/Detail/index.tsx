@@ -1,8 +1,55 @@
 import React from 'react';
-import { View ,Image, StyleSheet, Text, ImageBackground } from 'react-native';
+import { View ,Image, StyleSheet, Text, ImageBackground, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import Constants from 'expo-constants';
+import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import MapView , { Marker } from 'react-native-maps'
+import {SvgUri} from 'react-native-svg';
+import { RectButton } from 'react-native-gesture-handler';
+
+
 
 const Detail = () => {
-  return <View />
+  
+  const navigation = useNavigation();
+
+  function handleNavigateBack(){
+    navigation.goBack();
+  }
+
+  return(
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={handleNavigateBack}>
+          <Icon name="arrow-left" size={22} color="#34cd79" />
+        </TouchableOpacity>
+
+        <Image 
+              style={styles.pointImage}
+              source={{ uri:"https://images.unsplash.com/photo-1552825896-8059df63a1fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }}/>
+        <Text style={styles.pointName}> Mercado Central</Text>
+        <Text style={styles.pointItems}> Lâmpadas, Oleo de Cozinha, Baterias </Text>
+
+        <View style={styles.address}>
+          <Text style={styles.addressTitle}> Endereço</Text>
+          <Text style={styles.addressContent}> Av. Interlagos, 1801, São Paulo, SP</Text>
+        </View>
+      </View>
+
+      <View style={styles.footer}>
+        <RectButton style={styles.button} onPress={ () => {} }>
+          <FontAwesome name="whatsapp" size={22} color="#fff" />
+          <Text style={styles.buttonText}> WhatsApp </Text>
+        </RectButton>
+
+        <RectButton style={styles.button} onPress={ () => {} }>
+          <Icon name="mail" size={22} color="#fff" />
+          <Text style={styles.buttonText}> E-mail </Text>
+        </RectButton>   
+
+      </View>
+    </SafeAreaView>
+  );
 
 }
 
@@ -59,6 +106,7 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     paddingVertical: 20,
     paddingHorizontal: 32,
+    paddingBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
