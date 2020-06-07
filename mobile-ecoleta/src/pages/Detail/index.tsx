@@ -1,20 +1,76 @@
-import React from 'react';
-import { View ,Image, StyleSheet, Text, ImageBackground, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { View ,Image, StyleSheet, Text, ImageBackground, TouchableOpacity, ScrollView, SafeAreaView, Linking } from 'react-native';
 import Constants from 'expo-constants';
 import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import MapView , { Marker } from 'react-native-maps'
 import {SvgUri} from 'react-native-svg';
 import { RectButton } from 'react-native-gesture-handler';
+import api from '../../services/api';
+import * as MailComposer from 'expo-mail-composer'
 
+interface Params {
+  point_id: number;
+}
 
+interface DataPoint {
+  point:{
+    id: number;
+    image: string;
+    nome: string;
+    email: string;
+    whatsapp: string;
+    latitude: number;
+    longitude: number;
+    city: string;
+    uf: string;
+  };
+  items:{
+    id: number;
+    image: string;
+    titulo: string;
+    point_id: number;
+    item_id: number;
+  }[]
+  
+}
 
 const Detail = () => {
   
   const navigation = useNavigation();
+  const route = useRoute();
+  console.log(route);
+
+  const [pointItems, setPointItems] = useState<DataPoint>({} as DataPoint);
+
+  const routeParams = route.params as Params;
+
+  // recupera os items de um point de coleta
+  useEffect( () => {
+    api.get(`points/${routeParams.point_id}`).then(response => {
+      console.log(response.data);
+      setPointItems(response.data);
+    });
+  }, []);
 
   function handleNavigateBack(){
     navigation.goBack();
+  }
+
+  if(!pointItems.point){
+    return null;
+  }
+
+  function handleSendEmail(){
+    MailComposer.composeAsync({
+        subject: `Interesse na coleta de resíduos: ${""}`,
+        recipients: [`${pointItems.point.email}`,'gil-real@hotmail.com'],
+        body: "Olá até que horas funciona a coleta de resíduos.",
+    });
+}
+
+  function handleSendMessageWhatsapp(){
+    Linking.openURL(`whatsapp://send?phone=${"55" + "11977373225"}&text="Olá gostaria de mais informações sobre a coleta de resíduos"`);
   }
 
   return(
@@ -26,23 +82,24 @@ const Detail = () => {
 
         <Image 
               style={styles.pointImage}
-              source={{ uri:"https://images.unsplash.com/photo-1552825896-8059df63a1fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }}/>
-        <Text style={styles.pointName}> Mercado Central</Text>
-        <Text style={styles.pointItems}> Lâmpadas, Oleo de Cozinha, Baterias </Text>
+        // source={{ uri:"https://images.unsplash.com/photo-1552825896-8059df63a1fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }}/>
+        source={{ uri: pointItems.point.image }}/>
+        <Text style={styles.pointName}> { pointItems.point.nome} </Text>
+        <Text style={styles.pointItems}> { pointItems.items.map(item => item.titulo).join(', ') } </Text>
 
         <View style={styles.address}>
           <Text style={styles.addressTitle}> Endereço</Text>
-          <Text style={styles.addressContent}> Av. Interlagos, 1801, São Paulo, SP</Text>
+          <Text style={styles.addressContent}> { pointItems.point.city }, { pointItems.point.uf } </Text>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <RectButton style={styles.button} onPress={ () => {} }>
+        <RectButton style={styles.button} onPress={ handleSendMessageWhatsapp}>
           <FontAwesome name="whatsapp" size={22} color="#fff" />
           <Text style={styles.buttonText}> WhatsApp </Text>
         </RectButton>
 
-        <RectButton style={styles.button} onPress={ () => {} }>
+        <RectButton style={styles.button} onPress={ handleSendEmail }>
           <Icon name="mail" size={22} color="#fff" />
           <Text style={styles.buttonText}> E-mail </Text>
         </RectButton>   
@@ -57,7 +114,7 @@ const Detail = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 32,
+    padding: 12,
     paddingTop: 20,
   },
 
@@ -124,7 +181,7 @@ const styles = StyleSheet.create({
   buttonText: {
     marginLeft: 8,
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Roboto_500Medium',
   },
 });
