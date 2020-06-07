@@ -49,8 +49,12 @@ const Points = () => {
   // recupera os items de coleta
   useEffect( () => {
     api.get("items").then(response => {
-      console.log(response.data);
+      //console.log(response.data);
       setItems(response.data);
+
+      console.log(items.map(item => {
+        item.title;
+      }));
     });
   }, []);
 
@@ -166,82 +170,28 @@ const Points = () => {
         horizontal 
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 1 }}>
-
-        <TouchableOpacity 
-          style={[
-            styles.item,
-            selectedItems.includes(1) ? styles.selectedItem: {}
-          ]}           
-          onPress={ () => handleSelectItem(1) }
-          activeOpacity={0.6}
-        >        
-          <SvgUri width={42} 
-              height={42} 
-              uri="http://192.168.0.210:3000/uploads/lampadas.svg" 
-              color="#34cd79"/>
-          <Text style={styles.itemTitle}> Lâmpadas</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[
-            styles.item,
-            selectedItems.includes(2) ? styles.selectedItem: {}
-          ]}           
-          onPress={ () => handleSelectItem(2) }
-          activeOpacity={0.6}
-        > 
-          <SvgUri width={42} 
-              height={42} 
-              uri="http://192.168.0.210:3000/uploads/baterias.svg" 
-              color="#34cd79"/>
-          <Text style={styles.itemTitle}> Baterias</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[
-            styles.item,
-            selectedItems.includes(3) ? styles.selectedItem: {}
-          ]}           
-          onPress={ () => handleSelectItem(3) }
-          activeOpacity={0.6}
-        >         
-          <SvgUri width={42} 
-              height={42} 
-              uri="http://192.168.0.210:3000/uploads/papeis-papelao.svg" 
-              color="#34cd79"/>
-          <Text style={styles.itemTitle}> Pepelão</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[
-            styles.item,
-            selectedItems.includes(4) ? styles.selectedItem: {}
-          ]}           
-          onPress={ () => handleSelectItem(4) }
-          activeOpacity={0.6}
-        >   
-          <SvgUri width={42} 
-              height={42} 
-              uri="http://192.168.0.210:3000/uploads/organicos.svg" 
-              color="#34cd79"/>
-          <Text style={styles.itemTitle}> Orgânicos</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[
-            styles.item,
-            selectedItems.includes(5) ? styles.selectedItem: {}
-          ]}           
-          onPress={ () => handleSelectItem(5) }
-          activeOpacity={0.6}
-        >    
-          <SvgUri width={42} 
-              height={42} 
-              uri="http://192.168.0.210:3000/uploads/oleo.svg" 
-              color="#34cd79"/>
-          <Text style={styles.itemTitle}> Oleo</Text>
-        </TouchableOpacity>
-        
+        { // Serve para exibir conteudo javaScript
+          items.map(item => (
+            <TouchableOpacity 
+              key={String(item.id)} 
+              style={[
+                styles.item,
+                selectedItems.includes(item.id) ? styles.selectedItem: {}
+              ]} 
+              // esta function dentro da funtion é para evitar que ela seja executada toda vez que a pagina for aberta, pois deve ser executada somente quando o botão for precionado
+              onPress={ () => handleSelectItem(item.id) }
+              activeOpacity={0.6}
+            >        
+              <SvgUri width={42} 
+                  height={42} 
+                  //uri="http://localhost:3000/uploads/baterias.svg"
+                  uri={item.image_url}
+                  color="#34cd79"
+              />
+              <Text style={styles.itemTitle}> {item.title}</Text>
+            </TouchableOpacity>
+          ))
+        }       
       
 
       </ScrollView>
