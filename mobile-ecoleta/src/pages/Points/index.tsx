@@ -78,14 +78,14 @@ const Points = () => {
     loadPosition();
   } , []);
 
-   // recupera os itens a serem exibidos
+   // recupera os points e itens a serem exibidos
    useEffect( () => {
 
     console.log(selectedItems)
 
     api.get("points", {
       params: {
-        city: routeParams.city,
+        city: "São Paulo",
         uf: routeParams.uf,
         items: selectedItems
       }
