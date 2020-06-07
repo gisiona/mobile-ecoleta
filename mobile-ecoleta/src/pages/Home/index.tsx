@@ -1,5 +1,5 @@
-import React from 'react';
-import { View ,Image, StyleSheet, Text, ImageBackground } from 'react-native';
+import React, { Fragment, useState } from 'react';
+import { View ,Image, StyleSheet, Text, ImageBackground, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather as Icon } from '@expo/vector-icons';
 
@@ -11,20 +11,47 @@ import { useNavigation } from '@react-navigation/native';
 const Home = () => {
 
   const navigation = useNavigation();
+  const [city, setCity] = useState("");
+  const [uf, setUf] = useState("");
 
   function handleNavigation() {
-    navigation.navigate('Points');
+    navigation.navigate('Points', {
+      uf,
+      city
+    });
   }
 
   return(
-    <ImageBackground source={backgroungImage} style={styles.container} imageStyle={{ width: 274, height: 368}}>
+    <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS === "ios" ? "padding" : "undefined"}>
+      <ImageBackground source={backgroungImage} style={styles.container} imageStyle={{ width: 274, height: 368}}>
       <View style={styles.main}>
         <Image source={logo} />
-        <Text style={styles.title}> Seu marketplace de coleta de resíduos.</Text>
-        <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coletas de forma eficiente. </Text>
+        <Fragment>
+          <Text style={styles.title}> Seu marketplace de coleta de resíduos.</Text>
+          <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coletas de forma eficiente. </Text>
+        </Fragment>
       </View>
       
       <View style={styles.footer}>
+     
+        <TextInput 
+          style={styles.input}
+          placeholder="Digite a UF"
+          value={uf}
+          onChangeText={text => setUf(text)}
+          maxLength={2}
+          autoCapitalize="characters"
+          autoCorrect={false}
+        />
+         <TextInput 
+          style={styles.input}
+          placeholder="Digite a Cidade"
+          value={city}
+          onChangeText={text => setCity(text)}          
+          //autoCapitalize="characters"
+          autoCorrect={false}
+        />
+
         <RectButton style={styles.button} 
            onPress={handleNavigation}>
            <View style={styles.buttonIcon}>
@@ -36,6 +63,7 @@ const Home = () => {
         </RectButton>
       </View>
     </ImageBackground>
+    </KeyboardAvoidingView>    
   )
 }
 
